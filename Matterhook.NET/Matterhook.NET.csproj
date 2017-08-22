@@ -9,6 +9,9 @@
     <PackageLicenseUrl>https://github.com/PromoFaux/Matterhook.NET/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/PromoFaux/Matterhook.NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/PromoFaux/Matterhook.NET</RepositoryUrl>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
