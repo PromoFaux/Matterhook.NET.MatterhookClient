@@ -1,7 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>net452;net461;netstandard1.6</TargetFrameworks>
+    <Authors>Promofaux</Authors>
+    <Company />
+    <Description>Simple HTTPclient to post messages to your Mattermost server</Description>
+    <Copyright>Promofaux</Copyright>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
 
 </Project>
