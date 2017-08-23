@@ -88,13 +88,13 @@ namespace Matterhook.NET
         /// An optional URL used to hyperlink the author_name. If no author_name is specified, this field does nothing.
         /// </summary>
         [JsonProperty(PropertyName = "author_link")]
-        public string AuthorLink { get; set; }
+        public Uri AuthorLink { get; set; }
 
         /// <summary>
         ///  An optional URL used to display a 16x16 pixel icon beside the author_name.
         /// </summary>
         [JsonProperty(PropertyName = "author_icon")]
-        public string AuthorIcon { get; set; }
+        public Uri AuthorIcon { get; set; }
 
         #endregion
 
@@ -111,7 +111,7 @@ namespace Matterhook.NET
         ///  An optional URL used to hyperlink the title. If no title is specified, this field does nothing.
         /// </summary>
         [JsonProperty(PropertyName = "title_link")]
-        public string TitleLink { get; set; }
+        public Uri TitleLink { get; set; }
 
         #endregion
 
@@ -134,14 +134,14 @@ namespace Matterhook.NET
         /// Large images are resized to a maximum width of 400px or a maximum height of 300px, while still maintaining the original aspect ratio.
         /// </summary>
         [JsonProperty(PropertyName = "image_url")]
-        public string ImageUrl { get; set; }
+        public Uri ImageUrl { get; set; }
 
         /// <summary>
         /// An optional URL to an image file(GIF, JPEG, PNG, or BMP) that is displayed as a 75x75 pixel thumbnail on the right side of an attachment.
         /// We recommend using an image that is already 75x75 pixels, but larger images will be scaled down with the aspect ratio maintained.
         /// </summary>
         [JsonProperty(PropertyName = "thumb_url")]
-        public string ThumbUrl { get; set; }
+        public Uri ThumbUrl { get; set; }
 
 
         #endregion
