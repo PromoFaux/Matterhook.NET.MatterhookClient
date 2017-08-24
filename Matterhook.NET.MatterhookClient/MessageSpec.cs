@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Matterhook.NET
+namespace Matterhook.NET.MatterhookClient
+
 {
     public class MattermostMessage
     {

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 
-namespace Matterhook.NET
+namespace Matterhook.NET.MatterhookClient
 {
     public class MatterhookClient
     {
