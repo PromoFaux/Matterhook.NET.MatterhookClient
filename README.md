@@ -1,5 +1,5 @@
-[![NuGet](https://img.shields.io/nuget/v/Matterhook.NET.svg)](https://www.nuget.org/packages/Matterhook.NET/)
-[![NuGet](https://img.shields.io/nuget/dt/Matterhook.NET.svg)](https://www.nuget.org/packages/Matterhook.NET/)
+[![NuGet](https://img.shields.io/nuget/v/Matterhook.NET.MatterhookClient.svg)](https://www.nuget.org/packages/Matterhook.NET/)
+[![NuGet](https://img.shields.io/nuget/dt/Matterhook.NET.MatterhookClient.svg)](https://www.nuget.org/packages/Matterhook.NET/)
 
 # Matterhook.NET
 
@@ -7,7 +7,7 @@ Matterhook.NET is a simple webhook client to post messages to your Mattermost se
 
 ## Usage
 
-You can install the package from nuget using `Install-Package Matterhook.NET`,
+You can install the package from nuget using `Install-Package Matterhook.NET.MatterhookClient`,
 
 Alternatively, clone/fork this repo and compile the source yourself.
 
