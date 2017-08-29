@@ -1,0 +1,18 @@
+version: 1.1.{build}
+pull_requests:
+  do_not_increment_build_number: true
+image: Visual Studio 2017
+configuration: Release  
+nuget:
+  disable_publish_on_pr: true
+before_build:
+- cmd: nuget restore
+build:
+  publish_nuget: true
+  verbosity: minimal
+deploy:
+- provider: NuGet
+  api_key:
+    secure: PF7bDrbsFO2VBnmsIx+79GwYresnQyM4I7v7htmVYU+tnf8f1sLzwaP1ay+XLYJV
+  on:
+    APPVEYOR_REPO_TAG: true
