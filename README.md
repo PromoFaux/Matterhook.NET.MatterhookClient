@@ -1,5 +1,5 @@
-[![NuGet](https://img.shields.io/nuget/v/Matterhook.NET.MatterhookClient.svg)](https://www.nuget.org/packages/Matterhook.NET/)
-[![NuGet](https://img.shields.io/nuget/dt/Matterhook.NET.MatterhookClient.svg)](https://www.nuget.org/packages/Matterhook.NET/)
+[![Build status](https://ci.appveyor.com/api/projects/status/76x60eg4vjve4vcf?svg=true)](https://ci.appveyor.com/project/PromoFaux/matterhook-net-matterhookclient)[![NuGet](https://img.shields.io/nuget/v/Matterhook.NET.MatterhookClient.svg)](https://www.nuget.org/packages/Matterhook.NET.MatterhookClient/)
+[![NuGet](https://img.shields.io/nuget/dt/Matterhook.NET.MatterhookClient.svg)](https://www.nuget.org/packages/Matterhook.NET.MatterhookClient/)
 
 # Matterhook.NET
 
