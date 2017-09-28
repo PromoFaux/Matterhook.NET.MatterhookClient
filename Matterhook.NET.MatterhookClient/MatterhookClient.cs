@@ -32,7 +32,6 @@ namespace Matterhook.NET.MatterhookClient
             return new MattermostMessage
             {
                 Text = "",
-                Attachments = null,
                 Channel = message.Channel,
                 Username = message.Username,
                 IconUrl = message.IconUrl
@@ -43,7 +42,6 @@ namespace Matterhook.NET.MatterhookClient
         {
             try
             {
-                //string[] lines = theText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
                 HttpResponseMessage response = null;
                 var messages = new List<MattermostMessage>();
 
@@ -53,7 +51,7 @@ namespace Matterhook.NET.MatterhookClient
                 var lines = new string[] { };
                 if (message.Text != null)
                 {
-                    lines = message.Text.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None);
+                    lines = message.Text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
                 }
 
                 messages.Add(CloneMessage(message));
@@ -71,12 +69,12 @@ namespace Matterhook.NET.MatterhookClient
 
                 var len = messages[cnt].Text.Length;
 
-                if (message.Attachments.Any())
+                if (message.Attachments?.Any() ?? false)
                 {
-                    messages[cnt].Attachments = new List<MattermostAttachment> {new MattermostAttachment()};
+                    messages[cnt].Attachments = new List<MattermostAttachment> { new MattermostAttachment() };
                     messages[cnt].Attachments[0].Text = "";
 
-                    lines = message.Attachments[0].Text.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None);
+                    lines = message.Attachments[0].Text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 
                     foreach (var line in lines)
                     {
@@ -84,7 +82,7 @@ namespace Matterhook.NET.MatterhookClient
                         {
                             cnt += 1;
                             messages.Add(CloneMessage(message));
-                            messages[cnt].Attachments = new List<MattermostAttachment> {new MattermostAttachment()};
+                            messages[cnt].Attachments = new List<MattermostAttachment> { new MattermostAttachment() };
                             messages[cnt].Attachments[0].Text = "";
                         }
 
@@ -98,7 +96,7 @@ namespace Matterhook.NET.MatterhookClient
                     var num = 1;
                     foreach (var msg in messages)
                     {
-                        msg.Text += $" ({num}/{cnt + 1})";
+                        msg.Text = $"`({num}/{cnt + 1}): ` " + msg.Text;
                         num++;
                     }
                 }
