@@ -29,22 +29,36 @@ namespace Matterhook.NET.MatterhookClient
 
         public MattermostMessage CloneMessage(MattermostMessage message)
         {
-            return new MattermostMessage
+            var retval = new MattermostMessage
             {
                 Text = "",
                 Channel = message.Channel,
                 Username = message.Username,
                 IconUrl = message.IconUrl
             };
+
+            //if no attachments on the original, return clone without attachments.
+            if (retval.Attachments == null) return retval;
+
+            //we have attachment(s) on the original, we need at least one attachment on the clone
+            retval.Attachments[0] = message.Attachments[0];
+            retval.Attachments[0].Text = "";
+
+            return retval;
+
         }
 
+        /// <summary>
+        /// Post Message to Mattermost server. Messages will be automatically split if total text length > 4000
+        /// </summary>
+        /// <param name="message">The messsage you wish to send</param>
+        /// <returns></returns>
         public async Task<HttpResponseMessage> PostAsync(MattermostMessage message)
         {
             try
             {
                 HttpResponseMessage response = null;
                 var messages = new List<MattermostMessage>();
-
 
                 var cnt = 0;
 
@@ -54,8 +68,10 @@ namespace Matterhook.NET.MatterhookClient
                     lines = message.Text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
                 }
 
+                //start with one cloned message in the list
                 messages.Add(CloneMessage(message));
 
+                //add text from original. If we go over 3800, we'll split it to a new message.
                 foreach (var line in lines)
                 {
                     if (line.Length + messages[cnt].Text.Length > 3800)
@@ -67,26 +83,32 @@ namespace Matterhook.NET.MatterhookClient
                     messages[cnt].Text += $"{line}\r\n";
                 }
 
+                //Length of text on the last (or first if only one) message.
                 var len = messages[cnt].Text.Length;
 
+                //does our original have attachments?
                 if (message.Attachments?.Any() ?? false)
                 {
-                    messages[cnt].Attachments = new List<MattermostAttachment> { new MattermostAttachment() };
-                    messages[cnt].Attachments[0].Text = "";
 
-                    lines = message.Attachments[0].Text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-
-                    foreach (var line in lines)
+                    //loop through them in a similar fashion to the message text above.
+                    foreach (var att in message.Attachments)
                     {
-                        if (len + messages[cnt].Attachments[0].Text.Length + line.Length > 3800)
-                        {
-                            cnt += 1;
-                            messages.Add(CloneMessage(message));
-                            messages[cnt].Attachments = new List<MattermostAttachment> { new MattermostAttachment() };
-                            messages[cnt].Attachments[0].Text = "";
-                        }
+                        messages[cnt].Attachments = new List<MattermostAttachment> { new MattermostAttachment() };
+                        messages[cnt].Attachments[0].Text = "";
 
-                        messages[cnt].Attachments[0].Text += $"{line}\r\n";
+                        lines = message.Attachments[0].Text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+
+                        foreach (var line in lines)
+                        {
+                            if (len + messages[cnt].Attachments[0].Text.Length + line.Length > 3800)
+                            {
+                                cnt += 1;
+                                messages.Add(CloneMessage(message));
+                                messages[cnt].Attachments[0].Text = "";
+                            }
+
+                            messages[cnt].Attachments[0].Text += $"{line}\r\n";
+                        }
                     }
                 }
 
@@ -110,6 +132,7 @@ namespace Matterhook.NET.MatterhookClient
 
                 return response;
             }
+
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
