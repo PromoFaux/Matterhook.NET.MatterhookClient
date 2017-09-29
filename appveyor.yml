@@ -1,4 +1,4 @@
-version: 1.2.2.{build}
+version: 1.2.3.{build}
 pull_requests:
   do_not_increment_build_number: true
 image: Visual Studio 2017
@@ -7,7 +7,7 @@ dotnet_csproj:
   patch: true
   file: '**\*.csproj'
   version: '{version}'
-  package_version: '{version}'
+  package_version: '1.2.3'
 nuget:
   disable_publish_on_pr: true
 before_build:
