@@ -27,103 +27,126 @@ namespace Matterhook.NET.MatterhookClient
             _httpClient.Timeout = new TimeSpan(0, 0, 0, timeoutSeconds);
         }
 
-        public MattermostMessage CloneMessage(MattermostMessage message)
+        public MattermostMessage CloneMessage(MattermostMessage inMsg)
         {
-            var retval = new MattermostMessage
+            var outMsg = new MattermostMessage
             {
                 Text = "",
-                Channel = message.Channel,
-                Username = message.Username,
-                IconUrl = message.IconUrl
+                Channel = inMsg.Channel,
+                Username = inMsg.Username,
+                IconUrl = inMsg.IconUrl
             };
 
-            //if no attachments on the original, return clone without attachments.
-            if (retval.Attachments == null) return retval;
+            return outMsg;
+        }
 
-            //we have attachment(s) on the original, we need at least one attachment on the clone
-            retval.Attachments[0] = message.Attachments[0];
-            retval.Attachments[0].Text = "";
-
-            return retval;
-
+        private static MattermostAttachment CloneAttachment(MattermostAttachment inAtt)
+        {
+            var outAtt = new MattermostAttachment
+            {
+                AuthorIcon = inAtt.AuthorIcon,
+                AuthorLink = inAtt.AuthorLink,
+                AuthorName = inAtt.AuthorName,
+                Color = inAtt.Color,
+                Fallback = inAtt.Fallback,
+                Fields = inAtt.Fields,
+                ImageUrl = inAtt.ImageUrl,
+                Pretext = inAtt.Pretext,
+                ThumbUrl = inAtt.ThumbUrl,
+                Title = inAtt.Title,
+                TitleLink = inAtt.TitleLink,
+                Text = ""
+            };
+            return outAtt;
         }
 
         /// <summary>
         /// Post Message to Mattermost server. Messages will be automatically split if total text length > 4000
         /// </summary>
-        /// <param name="message">The messsage you wish to send</param>
+        /// <param name="inMessage">The messsage you wish to send</param>
         /// <returns></returns>
-        public async Task<HttpResponseMessage> PostAsync(MattermostMessage message)
+        public async Task<HttpResponseMessage> PostAsync(MattermostMessage inMessage)
         {
+
             try
             {
                 HttpResponseMessage response = null;
-                var messages = new List<MattermostMessage>();
+                var outMessages = new List<MattermostMessage>();
 
-                var cnt = 0;
+                var msgCount = 0;
 
                 var lines = new string[] { };
-                if (message.Text != null)
+                if (inMessage.Text != null)
                 {
-                    lines = message.Text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+                    lines = inMessage.Text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
                 }
 
-                //start with one cloned message in the list
-                messages.Add(CloneMessage(message));
+                //start with one cloned inMessage in the list
+                outMessages.Add(CloneMessage(inMessage));
 
-                //add text from original. If we go over 3800, we'll split it to a new message.
+                //add text from original. If we go over 3800, we'll split it to a new inMessage.
                 foreach (var line in lines)
                 {
-                    if (line.Length + messages[cnt].Text.Length > 3800)
+
+                    if (line.Length + outMessages[msgCount].Text.Length > 3800)
                     {
-                        cnt += 1;
-                        messages.Add(CloneMessage(message));
+
+                        msgCount += 1;
+                        outMessages.Add(CloneMessage(inMessage));
                     }
 
-                    messages[cnt].Text += $"{line}\r\n";
+                    outMessages[msgCount].Text += $"{line}\r\n";
                 }
 
-                //Length of text on the last (or first if only one) message.
-                var len = messages[cnt].Text.Length;
+                //Length of text on the last (or first if only one) inMessage.
+                var lenMessageText = outMessages[msgCount].Text.Length;
 
                 //does our original have attachments?
-                if (message.Attachments?.Any() ?? false)
+                if (inMessage.Attachments?.Any() ?? false)
                 {
+                    outMessages[msgCount].Attachments = new List<MattermostAttachment>();
 
-                    //loop through them in a similar fashion to the message text above.
-                    foreach (var att in message.Attachments)
+                    //loop through them in a similar fashion to the inMessage text above.
+                    foreach (var att in inMessage.Attachments)
                     {
-                        messages[cnt].Attachments = new List<MattermostAttachment> { new MattermostAttachment() };
-                        messages[cnt].Attachments[0].Text = "";
+                        //add this attachment to the outgoing message
+                        outMessages[msgCount].Attachments.Add(CloneAttachment(att));
+                        //get a count of attachments on this message, and subtract one so we know the index of the current new attachment
+                        var attIndex = outMessages[msgCount].Attachments.Count - 1;
 
-                        lines = message.Attachments[0].Text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+                        //Get the text lines
+                        lines = att.Text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 
                         foreach (var line in lines)
                         {
-                            if (len + messages[cnt].Attachments[0].Text.Length + line.Length > 3800)
+                            //Get the total length of all attachments on the current outgoing message
+                            var lenAllAttsText = outMessages[msgCount].Attachments.Sum(a => a.Text.Length);
+
+                            if (lenMessageText + lenAllAttsText + line.Length > 3800)
                             {
-                                cnt += 1;
-                                messages.Add(CloneMessage(message));
-                                messages[cnt].Attachments[0].Text = "";
+                                msgCount += 1;
+                                attIndex = 0;
+                                outMessages.Add(CloneMessage(inMessage));
+                                outMessages[msgCount].Attachments = new List<MattermostAttachment> { CloneAttachment(att) };
                             }
 
-                            messages[cnt].Attachments[0].Text += $"{line}\r\n";
+                            outMessages[msgCount].Attachments[attIndex].Text += $"{line}\r\n";
                         }
                     }
                 }
 
 
-                if (messages.Count > 1)
+                if (outMessages.Count > 1)
                 {
                     var num = 1;
-                    foreach (var msg in messages)
+                    foreach (var msg in outMessages)
                     {
-                        msg.Text = $"`({num}/{cnt + 1}): ` " + msg.Text;
+                        msg.Text = $"`({num}/{msgCount + 1}): ` " + msg.Text;
                         num++;
                     }
                 }
 
-                foreach (var msg in messages)
+                foreach (var msg in outMessages)
                 {
                     var serializedPayload = JsonConvert.SerializeObject(msg);
                     response = await _httpClient.PostAsync(_webhookUrl,
@@ -141,4 +164,3 @@ namespace Matterhook.NET.MatterhookClient
         }
     }
 }
-
