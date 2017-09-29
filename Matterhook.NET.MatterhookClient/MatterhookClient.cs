@@ -64,7 +64,7 @@ namespace Matterhook.NET.MatterhookClient
                         messages.Add(CloneMessage(message));
                     }
 
-                    messages[cnt].Text += line;
+                    messages[cnt].Text += $"{line}\r\n";
                 }
 
                 var len = messages[cnt].Text.Length;
