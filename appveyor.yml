@@ -1,4 +1,4 @@
-version: 1.2.3.{build}
+version: '{build}'
 pull_requests:
   do_not_increment_build_number: true
 image: Visual Studio 2017
@@ -6,8 +6,8 @@ configuration: Release
 dotnet_csproj:
   patch: true
   file: '**\*.csproj'
-  version: '{version}'
-  package_version: '1.2.3'
+  version: $(APPVEYOR_REPO_TAG_NAME)
+  package_version: '{version}'
 nuget:
   disable_publish_on_pr: true
 before_build:
