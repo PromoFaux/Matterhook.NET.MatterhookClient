@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452;net461;netcoreapp1.0;netcoreapp2.0</TargetFrameworks>
+    <TargetFrameworks>net452;net461;netcoreapp1.0;netcoreapp2.0;netstandard2.0</TargetFrameworks>
     <Authors>Promofaux</Authors>
     <Company />
     <Description>Simple HTTPclient to post messages to your Mattermost server</Description>
