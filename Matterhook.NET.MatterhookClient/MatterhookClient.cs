@@ -64,8 +64,9 @@ namespace Matterhook.NET.MatterhookClient
         /// Post Message to Mattermost server. Messages will be automatically split if total text length > 4000
         /// </summary>
         /// <param name="inMessage">The messsage you wish to send</param>
+        /// <param name="maxMessageLength">(Optional) Defaulted to 3800, but can be set to any value (Check with your Mattermost server admin!)</param>
         /// <returns></returns>
-        public async Task<HttpResponseMessage> PostAsync(MattermostMessage inMessage)
+        public async Task<HttpResponseMessage> PostAsync(MattermostMessage inMessage, int maxMessageLength = 3800)
         {
 
             try
@@ -84,11 +85,11 @@ namespace Matterhook.NET.MatterhookClient
                 //start with one cloned inMessage in the list
                 outMessages.Add(CloneMessage(inMessage));
 
-                //add text from original. If we go over 3800, we'll split it to a new inMessage.
+                //add text from original. If we go over 3800 (or whatever user chooses), we'll split it to a new inMessage.
                 foreach (var line in lines)
                 {
 
-                    if (line.Length + outMessages[msgCount].Text.Length > 3800)
+                    if (line.Length + outMessages[msgCount].Text.Length > maxMessageLength)
                     {
 
                         msgCount += 1;
@@ -122,7 +123,7 @@ namespace Matterhook.NET.MatterhookClient
                             //Get the total length of all attachments on the current outgoing message
                             var lenAllAttsText = outMessages[msgCount].Attachments.Sum(a => a.Text.Length);
 
-                            if (lenMessageText + lenAllAttsText + line.Length > 3800)
+                            if (lenMessageText + lenAllAttsText + line.Length > maxMessageLength)
                             {
                                 msgCount += 1;
                                 attIndex = 0;
