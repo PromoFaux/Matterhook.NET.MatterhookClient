@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -27,7 +28,7 @@ namespace Matterhook.NET.MatterhookClient
             _httpClient.Timeout = new TimeSpan(0, 0, 0, timeoutSeconds);
         }
 
-        public MattermostMessage CloneMessage(MattermostMessage inMsg)
+        private MattermostMessage CloneMessage(MattermostMessage inMsg)
         {
             var outMsg = new MattermostMessage
             {
@@ -61,95 +62,83 @@ namespace Matterhook.NET.MatterhookClient
         }
 
         /// <summary>
-        /// Post Message to Mattermost server. Messages will be automatically split if total text length > 4000
+        /// Post Message to Mattermost server. Messages will be automatically split. (Mattermost actually already auto splits long messages, but this will preserve whole words, rather than just splitting on message length alone.
         /// </summary>
         /// <param name="inMessage">The messsage you wish to send</param>
-        /// <param name="maxMessageLength">(Optional) Defaulted to 3800, but can be set to any value (Check with your Mattermost server admin!)</param>
+        /// <param name="maxMessageLength">(Optional) Defaulted to 4000, but can be set to any value (Check with your Mattermost server admin!)</param>
         /// <returns></returns>
-        public async Task<HttpResponseMessage> PostAsync(MattermostMessage inMessage, int maxMessageLength = 3800)
+        public async Task<HttpResponseMessage> PostAsync(MattermostMessage inMessage, int maxMessageLength = 4000)
         {
-
             try
             {
                 HttpResponseMessage response = null;
-                var outMessages = new List<MattermostMessage>();
 
-                var msgCount = 0;
+                maxMessageLength -= 10; //To allow for adding a message number indicator at the front end of the message.
 
-                var lines = new string[] { };
+                var outMessages = new List<MattermostMessage>
+                {
+                    CloneMessage(inMessage)
+                };
+
+                var msgIdx = 0;
+
                 if (inMessage.Text != null)
                 {
-                    lines = inMessage.Text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-                }
+                    //Split messages text into chunks of maxMessageLength in size.
+                    var textChunks = SplitTextIntoChunks(inMessage.Text, maxMessageLength);
 
-                //start with one cloned inMessage in the list
-                outMessages.Add(CloneMessage(inMessage));
-
-                //add text from original. If we go over 3800 (or whatever user chooses), we'll split it to a new inMessage.
-                foreach (var line in lines)
-                {
-
-                    if (line.Length + outMessages[msgCount].Text.Length > maxMessageLength)
+                    //iterate through chunks and create a MattermostMessage object for each one and add it to outMessages list.
+                    foreach (var chunk in textChunks)
                     {
-
-                        msgCount += 1;
-                        outMessages.Add(CloneMessage(inMessage));
-                    }
-
-                    outMessages[msgCount].Text += $"{line}\r\n";
-                }
-
-                //Length of text on the last (or first if only one) inMessage.
-                var lenMessageText = outMessages[msgCount].Text.Length;
-
-                //does our original have attachments?
-                if (inMessage.Attachments?.Any() ?? false)
-                {
-                    outMessages[msgCount].Attachments = new List<MattermostAttachment>();
-
-                    //loop through them in a similar fashion to the inMessage text above.
-                    foreach (var att in inMessage.Attachments)
-                    {
-                        //add this attachment to the outgoing message
-                        outMessages[msgCount].Attachments.Add(CloneAttachment(att));
-                        //get a count of attachments on this message, and subtract one so we know the index of the current new attachment
-                        var attIndex = outMessages[msgCount].Attachments.Count - 1;
-
-                        //Get the text lines
-                        lines = att.Text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-
-                        foreach (var line in lines)
+                        outMessages[msgIdx].Text = chunk;
+                        if (msgIdx < textChunks.Count() -1)
                         {
-                            //Get the total length of all attachments on the current outgoing message
-                            var lenAllAttsText = outMessages[msgCount].Attachments.Sum(a => a.Text.Length);
-
-                            if (lenMessageText + lenAllAttsText + line.Length > maxMessageLength)
-                            {
-                                msgCount += 1;
-                                attIndex = 0;
-                                outMessages.Add(CloneMessage(inMessage));
-                                outMessages[msgCount].Attachments = new List<MattermostAttachment> { CloneAttachment(att) };
-                            }
-
-                            outMessages[msgCount].Attachments[attIndex].Text += $"{line}\r\n";
+                            outMessages.Add(CloneMessage(inMessage));
+                            msgIdx++;
                         }
                     }
-                }
+                }                
 
+                //next check for attachments on the original message object
+                if (inMessage.Attachments.Any())
+                    {
+                        outMessages[msgIdx].Attachments = new List<MattermostAttachment>();
+                        var msgCnt = msgIdx;
+
+                        foreach (var att in inMessage.Attachments)
+                        {
+                            outMessages[msgIdx].Attachments.Add(CloneAttachment(att));
+                            var attIdx = outMessages[msgIdx].Attachments.Count - 1;
+
+                            var attTextChunks = SplitTextIntoChunks(att.Text, 6600); //arbitrary limit. MM files suggest limit is 7600, but that still results in attachments being truncated...
+
+                        foreach (var attChunk in attTextChunks)
+                            {
+                                outMessages[msgIdx].Attachments[attIdx].Text = attChunk;
+
+                                if (msgIdx < msgCnt + attTextChunks.Count() - 1)
+                                {
+                                    outMessages.Add(CloneMessage(inMessage));
+                                    msgIdx++;
+                                    outMessages[msgIdx].Attachments = new List<MattermostAttachment> { CloneAttachment(att) };
+                                }
+                            }
+                        }
+                    }
 
                 if (outMessages.Count > 1)
                 {
                     var num = 1;
                     foreach (var msg in outMessages)
                     {
-                        msg.Text = $"`({num}/{msgCount + 1}): ` " + msg.Text;
+                        msg.Text = $"`({num}/{msgIdx + 1}): ` " + msg.Text;
                         num++;
                     }
                 }
 
                 foreach (var msg in outMessages)
                 {
-                    var serializedPayload = JsonConvert.SerializeObject(msg);
+                     var serializedPayload = JsonConvert.SerializeObject(msg);
                     response = await _httpClient.PostAsync(_webhookUrl,
                         new StringContent(serializedPayload, Encoding.UTF8, "application/json"));
                 }
@@ -162,6 +151,39 @@ namespace Matterhook.NET.MatterhookClient
                 Console.WriteLine(e.Message);
                 throw;
             }
+        }
+
+        private static IEnumerable<string> SplitTextIntoChunks(string str, int maxChunkSize, bool preserveWords = true)
+        {
+
+            if (preserveWords)
+            {
+                //Less Simple
+                var words = str.Split(' ');
+                var tempString = new StringBuilder("");
+
+                foreach (var word in words)
+                {
+                    if (word.Length + tempString.Length + 1 > maxChunkSize)
+                    {
+                        yield return tempString.ToString();
+                        tempString.Clear();
+                    }
+
+                    tempString.Append(tempString.Length > 0 ? " " + word : word);
+                }
+
+                yield return tempString.ToString();
+            }
+            else
+            {
+                //Simple
+                for (var i = 0; i < str.Length; i += maxChunkSize)
+                {
+                    yield return str.Substring(i, Math.Min(maxChunkSize, str.Length - i));
+                }
+            }
+
         }
     }
 }
