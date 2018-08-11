@@ -97,10 +97,10 @@ namespace Matterhook.NET.MatterhookClient
                             msgIdx++;
                         }
                     }
-                }                
+                }
 
                 //next check for attachments on the original message object
-                if (inMessage.Attachments.Any())
+                if (inMessage.Attachments?.Any() ?? false)
                     {
                         outMessages[msgIdx].Attachments = new List<MattermostAttachment>();
                         var msgCnt = msgIdx;
