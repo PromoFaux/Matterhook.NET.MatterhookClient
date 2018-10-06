@@ -26,7 +26,7 @@ namespace Matterhook.NET.MatterhookClient
         /// Bot/User Icon
         /// </summary>
         [JsonProperty(PropertyName = "icon_url")]
-        public Uri IconUrl { get; set; }
+        public string IconUrl { get; set; }
 
         /// <summary>
         /// Message body. Supports Markdown
@@ -89,13 +89,13 @@ namespace Matterhook.NET.MatterhookClient
         /// An optional URL used to hyperlink the author_name. If no author_name is specified, this field does nothing.
         /// </summary>
         [JsonProperty(PropertyName = "author_link")]
-        public Uri AuthorLink { get; set; }
+        public string AuthorLink { get; set; }
 
         /// <summary>
         ///  An optional URL used to display a 16x16 pixel icon beside the author_name.
         /// </summary>
         [JsonProperty(PropertyName = "author_icon")]
-        public Uri AuthorIcon { get; set; }
+        public string AuthorIcon { get; set; }
 
         #endregion
 
@@ -112,7 +112,7 @@ namespace Matterhook.NET.MatterhookClient
         ///  An optional URL used to hyperlink the title. If no title is specified, this field does nothing.
         /// </summary>
         [JsonProperty(PropertyName = "title_link")]
-        public Uri TitleLink { get; set; }
+        public string TitleLink { get; set; }
 
         #endregion
 
@@ -135,14 +135,14 @@ namespace Matterhook.NET.MatterhookClient
         /// Large images are resized to a maximum width of 400px or a maximum height of 300px, while still maintaining the original aspect ratio.
         /// </summary>
         [JsonProperty(PropertyName = "image_url")]
-        public Uri ImageUrl { get; set; }
+        public string ImageUrl { get; set; }
 
         /// <summary>
         /// An optional URL to an image file(GIF, JPEG, PNG, or BMP) that is displayed as a 75x75 pixel thumbnail on the right side of an attachment.
         /// We recommend using an image that is already 75x75 pixels, but larger images will be scaled down with the aspect ratio maintained.
         /// </summary>
         [JsonProperty(PropertyName = "thumb_url")]
-        public Uri ThumbUrl { get; set; }
+        public string ThumbUrl { get; set; }
 
 
         #endregion
