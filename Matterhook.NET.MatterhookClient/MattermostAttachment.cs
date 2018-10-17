@@ -1,51 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace Matterhook.NET.MatterhookClient
-
 {
-    public class MattermostMessage
-    {
-
-        //https://docs.mattermost.com/developer/webhooks-incoming.html
-
-        /// <summary>
-        /// Channel to post to
-        /// </summary>
-        [JsonProperty(PropertyName = "channel")]
-        public string Channel { get; set; }
-
-        /// <summary>
-        /// Username for bot
-        /// </summary>
-        [JsonProperty(PropertyName = "username")]
-        public string Username { get; set; }
-
-        /// <summary>
-        /// Bot/User Icon
-        /// </summary>
-        [JsonProperty(PropertyName = "icon_url")]
-        public string IconUrl { get; set; }
-
-        /// <summary>
-        /// Message body. Supports Markdown
-        /// </summary>
-        [JsonProperty(PropertyName = "text")]
-        public string Text { get; set; }
-
-        /// <summary>
-        /// Richtext attachments 
-        /// </summary>
-        [JsonProperty(PropertyName = "attachments")]
-        public List<MattermostAttachment> Attachments { get; set; }
-
-    }
-
     /// <summary>
     /// https://docs.mattermost.com/developer/message-attachments.html#message-attachments
     /// </summary>
-    public class MattermostAttachment
+    public class MattermostAttachment/*ICloneable<MattermostAttachment>*/
     {
         //https://docs.mattermost.com/developer/message-attachments.html#attachment-options
         #region AttachmentOptions
@@ -125,6 +86,13 @@ namespace Matterhook.NET.MatterhookClient
         [JsonProperty(PropertyName = "fields")]
         public List<MattermostField> Fields { get; set; }
 
+
+        /// <summary>
+        /// Mattermost supports interactive buttons as actions in your integration message attachments.
+        /// </summary>
+        [JsonProperty(PropertyName = "actions")]
+        public List<MattermostAction> Actions { get; set; }
+
         #endregion
 
         //https://docs.mattermost.com/developer/message-attachments.html#images
@@ -144,31 +112,27 @@ namespace Matterhook.NET.MatterhookClient
         [JsonProperty(PropertyName = "thumb_url")]
         public string ThumbUrl { get; set; }
 
-
         #endregion
-    }
 
-    /// <summary>
-    /// https://docs.mattermost.com/developer/message-attachments.html#fieldshttps://docs.mattermost.com/developer/message-attachments.html#fields
-    /// </summary>
-    public class MattermostField
-    {
-        /// <summary>
-        /// A title shown in the table above the value.
-        /// </summary>
-        [JsonProperty(PropertyName = "title")]
-        public string Title { get; set; }
-
-        /// <summary>
-        /// The text value of the field. It can be formatted using Markdown.
-        /// </summary>
-        [JsonProperty(PropertyName = "value")]
-        public string Value { get; set; }
-
-        /// <summary>
-        /// Optionally set to “True” or “False” to indicate whether the value is short enough to be displayed beside other values.
-        /// </summary>
-        [JsonProperty(PropertyName = "short")]
-        public bool Short { get; set; }
+        public MattermostAttachment Clone()
+        {
+                var outAtt = new MattermostAttachment
+                {
+                    AuthorIcon = this.AuthorIcon,
+                    AuthorLink = this.AuthorLink,
+                    AuthorName = this.AuthorName,
+                    Color = this.Color,
+                    Fallback = this.Fallback,
+                    Fields = this.Fields,
+                    ImageUrl = this.ImageUrl,
+                    Pretext = this.Pretext,
+                    ThumbUrl = this.ThumbUrl,
+                    Title = this.Title,
+                    TitleLink = this.TitleLink,
+                    Actions = this.Actions,
+                    Text = this.Text
+                };
+                return outAtt;
+        }
     }
 }

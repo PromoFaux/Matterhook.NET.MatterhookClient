@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452;net461;netcoreapp1.0;netcoreapp2.0;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net452;net461;net471;netcoreapp1.0;netcoreapp2.1;netstandard2.0</TargetFrameworks>
     <Authors>Promofaux</Authors>
     <Company />
     <Description>Simple HTTPclient to post messages to your Mattermost server</Description>
@@ -16,8 +16,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-    <PackageReference Include="System.Net.Http" Version="4.3.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
 
 </Project>
