@@ -41,7 +41,7 @@ namespace Matterhook.NET.MatterhookClient
         {
             return new MattermostMessage
             {
-                Text = this.Text,
+                Text ="",
                 Channel = this.Channel,
                 Username = this.Username,
                 IconUrl = this.IconUrl

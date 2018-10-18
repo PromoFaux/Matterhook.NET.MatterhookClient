@@ -6,7 +6,7 @@ namespace Matterhook.NET.MatterhookClient
     /// <summary>
     /// https://docs.mattermost.com/developer/message-attachments.html#message-attachments
     /// </summary>
-    public class MattermostAttachment/*ICloneable<MattermostAttachment>*/
+    public class MattermostAttachment
     {
         //https://docs.mattermost.com/developer/message-attachments.html#attachment-options
         #region AttachmentOptions
@@ -130,7 +130,7 @@ namespace Matterhook.NET.MatterhookClient
                     Title = this.Title,
                     TitleLink = this.TitleLink,
                     Actions = this.Actions,
-                    Text = this.Text
+                    Text = ""
                 };
                 return outAtt;
         }
