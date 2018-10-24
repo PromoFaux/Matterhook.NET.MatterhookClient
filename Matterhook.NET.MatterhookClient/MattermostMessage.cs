@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Matterhook.NET.MatterhookClient
 {
-    public class MattermostMessage 
+    public class MattermostMessage
     {
         //https://docs.mattermost.com/developer/webhooks-incoming.html
 
@@ -37,7 +37,7 @@ namespace Matterhook.NET.MatterhookClient
         [JsonProperty(PropertyName = "attachments")]
         public List<MattermostAttachment> Attachments { get; set; }
 
-        public MattermostMessage Clone()
+        internal MattermostMessage Clone()
         {
             return new MattermostMessage
             {
