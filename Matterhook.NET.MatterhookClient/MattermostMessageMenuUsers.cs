@@ -2,10 +2,13 @@
 
 namespace Matterhook.NET.MatterhookClient
 {
+    /// <summary>
+    /// Mattermost message menu with users data source
+    /// </summary>
     public class MattermostMessageMenuUsers : IMattermostAction
     {
         /// <summary>
-        /// Action description. Will also appear as the button's text.
+        /// Action description. Will also appear as the menu's text.
         /// </summary>
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }

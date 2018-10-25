@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 namespace Matterhook.NET.MatterhookClient
 {
     /// <summary>
-    ///     https://docs.mattermost.com/developer/message-attachments.html#message-attachments
+    /// https://docs.mattermost.com/developer/message-attachments.html#message-attachments
     /// </summary>
     public class MattermostAttachment
     {

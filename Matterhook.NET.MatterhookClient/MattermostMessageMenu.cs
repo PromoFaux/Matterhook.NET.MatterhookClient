@@ -3,10 +3,13 @@ using Newtonsoft.Json;
 
 namespace Matterhook.NET.MatterhookClient
 {
+    /// <summary>
+    /// A mattermost message menu. https://docs.mattermost.com/developer/interactive-messages.html#message-menus
+    /// </summary>
     public class MattermostMessageMenu : IMattermostAction
     {
         /// <summary>
-        /// Action description. Will also appear as the button's text.
+        /// Action description. Will also appear as the menu's text.
         /// </summary>
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
@@ -27,6 +30,6 @@ namespace Matterhook.NET.MatterhookClient
         /// The options for the menu.
         /// </summary>
         [JsonProperty(PropertyName = "options")]
-        public List<MessageActionOption> Options { get; set; } 
+        public List<MessageMenuOption> Options { get; set; } 
     }
 }
