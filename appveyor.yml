@@ -1,7 +1,4 @@
-branches:
-  only:
-    - master
-    - development
+
 
 environment:
   VERSION: 1.3
