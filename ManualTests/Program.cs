@@ -1,11 +1,11 @@
-using Matterhook.NET.MatterhookClient;
+﻿using Matterhook.NET.MatterhookClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace ManualTesting
+namespace ManualTests
 {
     class Program
     {
