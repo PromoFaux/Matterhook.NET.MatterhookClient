@@ -5,7 +5,7 @@ namespace Matterhook.NET.MatterhookClient
     /// <summary>
     /// https://docs.mattermost.com/developer/interactive-messages.html
     /// </summary>
-    public class MattermostAction
+    public class MattermostAction : IMattermostAction
     {
         /// <summary>
         /// Action description. Will also appear as the button's text.
