@@ -128,7 +128,7 @@ var message = new MattermostMessage()
                     Name = "Notify",
                     Integration = new MattermostIntegration("https://matterhook.example.com/notify", new Dictionary<string, object>()
                     {
-                        {"text","New code was pushed." }
+                        {"text","code was pushed." }
                     })
                 }
             }
