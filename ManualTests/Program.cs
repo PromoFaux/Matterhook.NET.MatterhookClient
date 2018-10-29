@@ -1,47 +1,49 @@
-﻿using Matterhook.NET.MatterhookClient;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Matterhook.NET.MatterhookClient;
+using Newtonsoft.Json;
 
 namespace ManualTests
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             //Make sure the file `config.json` exists with a `webhookURL` and `testChannel` properties (copy always)
             var _config = LoadConfig();
-            var client = new MatterhookClient(_config.incomingWebHookUrl);
 
             PostBasicMessage(_config);
             PostAdvancedMessage(_config);
             PostButtonsMessage(_config);
+            PostMenuMessage(_config);
+            PostChannelsMenuMessage(_config);
+            PostUsersMenuMessage(_config);
         }
 
-        public static void PostBasicMessage(Config _config)
+        public static void PostBasicMessage(Config config)
         {
-            var client = new MatterhookClient(_config.incomingWebHookUrl);
+            var client = new MatterhookClient(config.incomingWebHookUrl);
             var message = new MattermostMessage
             {
                 Text = "Hello, I was posted using [Matterhook.NET](https://github.com/promofaux/Matterhook.NET)",
-                Channel = _config.testChannel,
+                Channel = config.testChannel,
                 Username = "Awesome-O-Matic"
             };
-
             Task.WaitAll(client.PostAsync(message));
         }
 
-        public static void PostAdvancedMessage(Config _config)
+        public static void PostAdvancedMessage(Config config)
         {
-            var client = new MatterhookClient(_config.incomingWebHookUrl);
+            var client = new MatterhookClient(config.incomingWebHookUrl);
             var message = new MattermostMessage
             {
                 Text = "Hello, I was posted using [Matterhook.NET](https://github.com/promofaux/Matterhook.NET)",
-                Channel = _config.testChannel,
+                Channel = config.testChannel,
                 Username = "Awesome-O-Matic",
-                IconUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Robot_icon.svg/2000px-Robot_icon.svg.png",
+                IconUrl =
+                    "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Robot_icon.svg/2000px-Robot_icon.svg.png",
 
                 Attachments = new List<MattermostAttachment>
                 {
@@ -50,7 +52,8 @@ namespace ManualTests
                         Fallback = "test",
                         Color = "#FF8000",
                         Pretext = "This is optional pretext that shows above the attachment.",
-                        Text = "This is the text of the attachment. It should appear just above an image of the Mattermost logo. The left border of the attachment should be colored orange, and below the image it should include additional fields that are formatted in columns. At the top of the attachment, there should be an author name followed by a bolded title. Both the author name and the title should be hyperlinks.",
+                        Text =
+                            "This is the text of the attachment. It should appear just above an image of the Mattermost logo. The left border of the attachment should be colored orange, and below the image it should include additional fields that are formatted in columns. At the top of the attachment, there should be an author name followed by a bolded title. Both the author name and the title should be hyperlinks.",
                         AuthorName = "Mattermost",
                         AuthorIcon = "http://www.mattermost.org/wp-content/uploads/2016/04/icon_WS.png",
                         AuthorLink = "http://www.mattermost.org/",
@@ -92,38 +95,155 @@ namespace ManualTests
             Task.WaitAll(client.PostAsync(message));
         }
 
-        public static void PostButtonsMessage(Config _config)
+        public static void PostButtonsMessage(Config config)
         {
-            var client = new MatterhookClient(_config.incomingWebHookUrl);
-            var message = new MattermostMessage()
+            var client = new MatterhookClient(config.incomingWebHookUrl);
+            var message = new MattermostMessage
             {
                 Text = "Message Text Example",
-                Channel = _config.testChannel,
+                Channel = config.testChannel,
                 Username = "Awesome-O-Matic",
-                IconUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Robot_icon.svg/2000px-Robot_icon.svg.png",
-                Attachments = new List<MattermostAttachment>()
+                IconUrl =
+                    "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Robot_icon.svg/2000px-Robot_icon.svg.png",
+                Attachments = new List<MattermostAttachment>
                 {
-                    new MattermostAttachment()
+                    new MattermostAttachment
                     {
                         Text = "Attachment Text Example",
-                        Actions = new List<IMattermostAction>()
+                        Actions = new List<IMattermostAction>
                         {
-                           new MattermostAction()
+                            new MattermostAction
                             {
                                 Name = "Merge",
-                                Integration = new MattermostIntegration(_config.outgoingWebHookUrl,new Dictionary<string, object>()
-                                {
-                                    {"pr",1234 },
-                                    {"action","merge"}
-                                })
+                                Integration = new MattermostIntegration(config.outgoingWebHookUrl,
+                                    new Dictionary<string, object>
+                                    {
+                                        {"pr", 1234},
+                                        {"action", "merge"}
+                                    })
                             },
-                            new MattermostAction()
+                            new MattermostAction
                             {
                                 Name = "Notify",
-                                Integration = new MattermostIntegration(_config.outgoingWebHookUrl, new Dictionary<string, object>()
+                                Integration = new MattermostIntegration(config.outgoingWebHookUrl,
+                                    new Dictionary<string, object>
+                                    {
+                                        {"text", "code was pushed."}
+                                    })
+                            }
+                        }
+                    }
+                }
+            };
+            Task.WaitAll(client.PostAsync(message));
+        }
+
+        public static void PostMenuMessage(Config config)
+        {
+            var client = new MatterhookClient(config.incomingWebHookUrl);
+            var message = new MattermostMessage
+            {
+                Text =
+                    "This is a menu message posted using [Matterhook.NET](https://github.com/promofaux/Matterhook.NET)",
+                Channel = config.testChannel,
+                Username = "Awesome-O-Matic",
+                IconUrl =
+                    "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Robot_icon.svg/2000px-Robot_icon.svg.png",
+
+                Attachments = new List<MattermostAttachment>
+                {
+                    new MattermostAttachment
+                    {
+                        Pretext = "This is optional pretext that shows above the attachment.",
+                        Text = "This is the text of the attachment. ",
+                        Actions = new List<IMattermostAction>
+                        {
+                            new MattermostMessageMenu
+                            {
+                                Integration = new MattermostIntegration(config.outgoingWebHookUrl,
+                                    new Dictionary<string, object>
+                                    {
+                                        {"text", "Some data to send always."}
+                                    }),
+                                Name = "Test",
+                                Options = new List<MessageMenuOption>
                                 {
-                                    {"text","code was pushed." }
-                                })
+                                    new MessageMenuOption("Option1", "value1"),
+                                    new MessageMenuOption("Option2", "value2"),
+                                    new MessageMenuOption("Option3", "value3")
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            Task.WaitAll(client.PostAsync(message));
+        }
+
+        public static void PostChannelsMenuMessage(Config config)
+        {
+            var client = new MatterhookClient(config.incomingWebHookUrl);
+            var message = new MattermostMessage
+            {
+                Text =
+                    "This is a message menu with channels source posted using [Matterhook.NET](https://github.com/promofaux/Matterhook.NET)",
+                Channel = config.testChannel,
+                Username = "Awesome-O-Matic",
+                IconUrl =
+                    "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Robot_icon.svg/2000px-Robot_icon.svg.png",
+
+                Attachments = new List<MattermostAttachment>
+                {
+                    new MattermostAttachment
+                    {
+                        Pretext = "This is optional pretext that shows above the attachment.",
+                        Text = "This is the text of the attachment. ",
+                        Actions = new List<IMattermostAction>
+                        {
+                            new MattermostMessageMenuChannels
+                            {
+                                Name = "channels",
+                                Integration = new MattermostIntegration(config.outgoingWebHookUrl,
+                                    new Dictionary<string, object>
+                                    {
+                                        {"active", "false"}
+                                    })
+                            }
+                        }
+                    }
+                }
+            };
+            Task.WaitAll(client.PostAsync(message));
+        }
+
+        public static void PostUsersMenuMessage(Config config)
+        {
+            var client = new MatterhookClient(config.incomingWebHookUrl);
+            var message = new MattermostMessage
+            {
+                Text =
+                    "This is a message menu with users source posted using [Matterhook.NET](https://github.com/promofaux/Matterhook.NET)",
+                Channel = config.testChannel,
+                Username = "Awesome-O-Matic",
+                IconUrl =
+                    "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Robot_icon.svg/2000px-Robot_icon.svg.png",
+
+                Attachments = new List<MattermostAttachment>
+                {
+                    new MattermostAttachment
+                    {
+                        Pretext = "This is optional pretext that shows above the attachment.",
+                        Text = "This is the text of the attachment. ",
+                        Actions = new List<IMattermostAction>
+                        {
+                            new MattermostMessageMenuUsers
+                            {
+                                Name = "Users",
+                                Integration = new MattermostIntegration(config.outgoingWebHookUrl,
+                                    new Dictionary<string, object>
+                                    {
+                                        {"mood", "sad"}
+                                    })
                             }
                         }
                     }
@@ -135,39 +255,15 @@ namespace ManualTests
         public static Config LoadConfig()
         {
             var configFile = "config.json";
-            var _config = new Config();
             if (File.Exists(configFile))
-            {
-                using (var file = File.OpenText(configFile))
-                {
-                    var serializer = new JsonSerializer();
-                    _config = (Config)serializer.Deserialize(file, typeof(Config));
-
-                    return _config;
-                }
-            }
-            else
             {
                 Console.WriteLine("No Config file found, make sure it exists first");
                 Environment.Exit(1);
+                return null;
             }
-            return null;
-        }
-    }
 
-    public class Config
-    {
-        /// <summary>
-        /// The incoming webhook URL on the mattermost server
-        /// </summary>
-        public string incomingWebHookUrl { get; set; }
-        /// <summary>
-        /// For interactive buttons
-        /// </summary>
-        public string outgoingWebHookUrl { get; set; }
-        /// <summary>
-        /// Channel to post your test messages to
-        /// </summary>
-        public string testChannel { get; set; }
+            var jsonStr = File.ReadAllText(configFile);
+            return JsonConvert.DeserializeObject<Config>(jsonStr);
+        }
     }
 }
