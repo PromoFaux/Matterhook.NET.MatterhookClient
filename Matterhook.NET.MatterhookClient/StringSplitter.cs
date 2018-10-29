@@ -18,7 +18,8 @@ namespace Matterhook.NET.MatterhookClient
         /// <returns></returns>
         public static IEnumerable<string> SplitTextIntoChunks(string str, int maxChunkSize, bool preserveWords = true)
         {
-            if (string.IsNullOrEmpty(str)) throw new ArgumentException("Text can't be null or empty",nameof(str));
+            if (string.IsNullOrEmpty(str)) throw new ArgumentException("Text can't be null or empty.", nameof(str));
+            if (maxChunkSize < 1) throw new ArgumentException("Max. chunk size must be at least 1 char.", nameof(maxChunkSize));
             if (str.Length < maxChunkSize) yield return str;
             else if (preserveWords)
             {
