@@ -1,7 +1,7 @@
 
 
 environment:
-  VERSION: 1.4
+  VERSION: 1.3
 
 pull_requests:
   do_not_increment_build_number: true
@@ -13,7 +13,8 @@ configuration: Release
 init:
   - cmd: echo %APPVEYOR_REPO_TAG%
   - cmd: set BUILD_VERSION=%VERSION%.%APPVEYOR_BUILD_NUMBER%
-  - cmd: IF %APPVEYOR_REPO_TAG% == "true" (set PROJECT_VERSION=%APPVEYOR_REPO_TAG_NAME%) ELSE (IF {branch}=="master" (set PROJECT_VERSION=%BUILD_VERSION%) ELSE set PROJECT_VERSION=%BUILD_VERSION%-dev) 
+  - cmd: echo %APPVEYOR_REPO_BRANCH%
+  - cmd: IF "%APPVEYOR_REPO_TAG%" == "true" (set PROJECT_VERSION=%APPVEYOR_REPO_TAG_NAME%) ELSE (IF "%APPVEYOR_REPO_BRANCH%"=="master" (set PROJECT_VERSION=%BUILD_VERSION%) ELSE (IF "%APPVEYOR_REPO_BRANCH%"=="development" (set PROJECT_VERSION=%BUILD_VERSION%-dev) ELSE (set PROJECT_VERSION=%BUILD_VERSION%-pr)))
   - cmd: echo %PROJECT_VERSION%
   - cmd: echo %APPVEYOR_BUILD_NUMBER%
   - cmd: echo %APPVEYOR_BUILD_VERSION%
