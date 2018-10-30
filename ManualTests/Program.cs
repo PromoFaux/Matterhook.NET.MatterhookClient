@@ -255,7 +255,7 @@ namespace ManualTests
         public static Config LoadConfig()
         {
             var configFile = "config.json";
-            if (File.Exists(configFile))
+            if (! File.Exists(configFile))
             {
                 Console.WriteLine("No Config file found, make sure it exists first");
                 Environment.Exit(1);
