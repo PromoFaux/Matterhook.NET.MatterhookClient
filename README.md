@@ -32,7 +32,8 @@ Task.WaitAll(client.PostAsync(message));
 
 ### Advanced Message with attachment:
 
-> Using example template from [Mattermost docs](https://docs.mattermost.com/developer/message-attachments.html#example-message-attachment)
+> Using example template from [Mattermost docs]
+(https://docs.mattermost.com/developer/message-attachments.html#example-message-attachment)
 
 ```C#
  var client = new MatterhookClient("https://your.webhook.url/0892340923432");
@@ -151,7 +152,8 @@ Clicking `Merge` will trigger a POST request to `https://matterhook.example.com/
 }
 ```
 
-and clicking `Notify` will trigger a POST request to `https://matterhook.example.com/notify` with body
+and clicking `Notify` will trigger a POST request to 
+`https://matterhook.example.com/notify` with body
 
 ```json
 {
