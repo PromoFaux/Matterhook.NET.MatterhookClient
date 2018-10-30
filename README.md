@@ -11,7 +11,7 @@ You can install the package from nuget using `Install-Package Matterhook.NET.Mat
 
 Alternatively, clone/fork this repo and compile the source yourself.
 
-#### Simple Message:
+### Simple Message:
 
 ```C#
 
@@ -30,7 +30,7 @@ Task.WaitAll(client.PostAsync(message));
 
 ![](http://i.imgur.com/jLZsP4E.png)
 
-#### Advanced Message with attachment:
+### Advanced Message with attachment:
 
 > Using example template from [Mattermost docs](https://docs.mattermost.com/developer/message-attachments.html#example-message-attachment)
 
@@ -42,8 +42,7 @@ var message = new MattermostMessage
     Text = "Hello, I was posted using [Matterhook.NET](https://github.com/promofaux/Matterhook.NET)",
     Channel = "offtopic",
     Username = "Awesome-O-Matic",
-    IconUrl = new Uri(
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Robot_icon.svg/2000px-Robot_icon.svg.png"),
+    IconUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Robot_icon.svg/2000px-Robot_icon.svg.png",
 
     Attachments = new List<MattermostAttachment>
     {
@@ -98,3 +97,67 @@ Task.WaitAll(client.PostAsync(message));
 ```
 
 ![](https://i.imgur.com/n5ecwYb.png)
+
+### Message with interactive buttons
+
+```C#
+var client = new MatterhookClient("http://mattermost.url");
+var message = new MattermostMessage()
+{
+    Text = "Message Text Example",
+    Username = "Awesome-O-Matic",
+    IconUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Robot_icon.svg/2000px-Robot_icon.svg.png",
+    Attachments = new List<MattermostAttachment>()
+    {
+        new MattermostAttachment()
+        {
+            Text = "Attachment Text Example",
+            Actions = new List<MattermostAction>()
+            {
+                new MattermostAction()
+                {
+                    Name = "Merge",
+                    Integration = new MattermostIntegration("https://matterhook.example.com/merge",new Dictionary<string, object>()
+                    {
+                        {"pr",1234 },
+                        {"action","merge"}
+                    })
+                },
+                new MattermostAction()
+                {
+                    Name = "Notify",
+                    Integration = new MattermostIntegration("https://matterhook.example.com/notify", new Dictionary<string, object>()
+                    {
+                        {"text","code was pushed." }
+                    })
+                }
+            }
+        }
+    }
+};
+Task.WaitAll(client.PostAsync(message));
+```
+![](https://i.imgur.com/Eb8Ne2g.png)
+
+Clicking `Merge` will trigger a POST request to `https://matterhook.example.com/merge` with following body
+
+```json
+{
+  "user_id": "{userid}",
+  "context": {
+    "action": "merge",
+    "pr": 1234
+  }
+}
+```
+
+and clicking `Notify` will trigger a POST request to `https://matterhook.example.com/notify` with body
+
+```json
+{
+  "user_id": "{userid}",
+  "context": {   
+    "text": "New code was pushed."
+  }
+}
+```

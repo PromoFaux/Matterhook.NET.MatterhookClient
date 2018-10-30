@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452;net461;netcoreapp1.0;netcoreapp2.0;netstandard2.0</TargetFrameworks>
-    <Authors>Promofaux</Authors>
+    <TargetFrameworks>net452;net461;net471;netcoreapp1.0;netcoreapp2.1;netstandard2.0</TargetFrameworks>
+    <Authors>Promofaux, rgomez90</Authors>
     <Company />
     <Description>Simple HTTPclient to post messages to your Mattermost server</Description>
     <Copyright>Promofaux</Copyright>
@@ -11,13 +11,14 @@
     <RepositoryUrl>https://github.com/PromoFaux/Matterhook.NET.MatterhookClient</RepositoryUrl>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
-    <Version>1.0.4</Version>
+    <Version>1.0.4-asdad-cxcxc-2</Version>
     <PackageId>Matterhook.NET.MatterhookClient</PackageId>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-    <PackageReference Include="System.Net.Http" Version="4.3.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
 
 </Project>
