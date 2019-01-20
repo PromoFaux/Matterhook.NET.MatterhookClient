@@ -3,29 +3,47 @@
 
 # Matterhook.NET.MatterhookClient
 
-Matterhook.NET.MatterhookClient is a simple webhook client to post messages to your Mattermost server using Webhooks.
+Matterhook.NET.MatterhookClient is a simple webhook client to post messages to your Mattermost server using Webhooks. It supports message buttons and menus (menus are only supported in Mattermost v5.4+).
 
-## Usage
+## Installation
 
-You can install the package from nuget using `Install-Package Matterhook.NET.MatterhookClient`,
+You can install the latest release by installing the package from NuGet using `Install-Package Matterhook.NET.MatterhookClient`.
 
 Alternatively, clone/fork this repo and compile the source yourself.
 
-### Simple Message:
+## Basic usage
+
+Using this library is really easy. Just create a new MatterhookClient
+```csharp
+var client = new MatterhookClient("https://your.webhook.url/0892340923432");
+```
+
+Create your message 
+
+```csharp
+var message = new MattermostMessage()
+{
+    //MessageOptions
+};
+```
+
+Post your message
+
+```csharp
+Task.WaitAll(client.PostAsync(message));
+```
+
+## Message Types
+
+### Simple Message
 
 ```C#
-
-var client = new MatterhookClient("https://your.webhook.url/0892340923432");
-
 var message = new MattermostMessage
 {
     Text = "Hello, I was posted using [Matterhook.NET](https://github.com/promofaux/Matterhook.NET)",
     Channel = "general",
     Username = "Awesome-O-Matic"
 };
-
-Task.WaitAll(client.PostAsync(message));
-
 ```
 
 ![](http://i.imgur.com/jLZsP4E.png)
@@ -35,8 +53,6 @@ Task.WaitAll(client.PostAsync(message));
 > Using example template from [Mattermost docs](https://docs.mattermost.com/developer/message-attachments.html#example-message-attachment)
 
 ```C#
- var client = new MatterhookClient("https://your.webhook.url/0892340923432");
-
 var message = new MattermostMessage
 {
     Text = "Hello, I was posted using [Matterhook.NET](https://github.com/promofaux/Matterhook.NET)",
@@ -91,9 +107,6 @@ var message = new MattermostMessage
         }
     }
 };
-
-Task.WaitAll(client.PostAsync(message));
-
 ```
 
 ![](https://i.imgur.com/n5ecwYb.png)
@@ -101,7 +114,6 @@ Task.WaitAll(client.PostAsync(message));
 ### Message with interactive buttons
 
 ```C#
-var client = new MatterhookClient("http://mattermost.url");
 var message = new MattermostMessage()
 {
     Text = "Message Text Example",
@@ -135,8 +147,8 @@ var message = new MattermostMessage()
         }
     }
 };
-Task.WaitAll(client.PostAsync(message));
 ```
+
 ![](https://i.imgur.com/Eb8Ne2g.png)
 
 Clicking `Merge` will trigger a POST request to `https://matterhook.example.com/merge` with following body
@@ -161,3 +173,51 @@ and clicking `Notify` will trigger a POST request to `https://matterhook.example
   }
 }
 ```
+
+### Message with menu buttons (supported in Mattermost 5.4+)
+
+You also can post messages with menu buttons. It will post a message with a dropdown button where the users can select a value, which will be posted to the target integration.
+
+Just add an attachment to your message as follows:
+
+```csharp
+Attachments = new List<MattermostAttachment>
+{
+    new MattermostAttachment
+    {
+        Pretext = "This is optional pretext that shows above the attachment.",
+        Text = "This is the text of the attachment. ",
+        Actions = new List<IMattermostAction>
+        {
+            new MattermostMessageMenu
+            {
+                Integration = new MattermostIntegration(config.outgoingWebHookUrl,
+                    new Dictionary<string, object>
+                    {
+                        {"text", "Some data to send always."}
+                    }),
+                Name = "Test",
+                Options = new List<MessageMenuOption>
+                {
+                    new MessageMenuOption("Option1", "value1"),
+                    new MessageMenuOption("Option2", "value2"),
+                    new MessageMenuOption("Option3", "value3")
+                }
+            }
+        }
+    }
+}
+```
+
+You can add as many attachments of any type to a message as you want. Message menus and buttons can be used to for ex.:
+
+* Mark a task complete in your project management tracker
+* Conduct a customer survey or a poll
+* Initiate a command to merge a branch into a release
+
+## Contributing
+
+We welcome everyone who wants to contribute to this repo!
+Just open an issue with your intention or make a comment in some open issue you would like to work on. 
+
+Please ensure that your Pull Requests are based on, and submitted against the development branch.
