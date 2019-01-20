@@ -218,6 +218,6 @@ You can add as many attachments of any type to a message as you want. Message me
 ## Contributing
 
 We welcome everyone who wants to contribute to this repo!
-For it, just open an issue with your intention or make a comment in some open issue you would like to work on. 
+Just open an issue with your intention or make a comment in some open issue you would like to work on. 
 
-
+Please ensure that your Pull Requests are based on, and submitted against the development branch.
