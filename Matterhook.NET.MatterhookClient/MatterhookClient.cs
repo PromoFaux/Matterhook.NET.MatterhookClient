@@ -108,9 +108,9 @@ namespace Matterhook.NET.MatterhookClient
 
                 foreach (var msg in outMessages)
                 {
-                    var serializedPayload = JsonConvert.SerializeObject(msg, new MattermostJsonSerializerSettings());
+                    var msgJson = msg.SerializeToJson(); 
                     response = await _httpClient.PostAsync(_webhookUrl,
-                        new StringContent(serializedPayload, Encoding.UTF8, "application/json")).ConfigureAwait(false);
+                        new StringContent(msgJson, Encoding.UTF8, "application/json")).ConfigureAwait(false);
                 }
 
                 return response;

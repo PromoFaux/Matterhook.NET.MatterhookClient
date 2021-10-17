@@ -1,0 +1,32 @@
+﻿{
+  "channel": "testChannel",
+  "username": "Awesome-O-Matic",
+  "icon_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Robot_icon.svg/2000px-Robot_icon.svg.png",
+  "text": "Message Text Example",
+  "attachments": [
+    {
+      "text": "Attachment Text Example",
+      "actions": [
+        {
+          "name": "Merge",
+          "integration": {
+            "url": "https://notarealoutgoingwebhook.justfortests",
+            "context": {
+              "pr": 1234,
+              "action": "merge"
+            }
+          }
+        },
+        {
+          "name": "Notify",
+          "integration": {
+            "url": "https://notarealoutgoingwebhook.justfortests",
+            "context": {
+              "text": "code was pushed."
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

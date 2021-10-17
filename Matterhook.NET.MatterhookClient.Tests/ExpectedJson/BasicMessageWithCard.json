@@ -1,0 +1,8 @@
+﻿{
+  "channel": "testChannel",
+  "username": "Awesome-O-Matic",
+  "text": "Hello, I was posted using [Matterhook.NET.MatterhookClient](https://github.com/promofaux/Matterhook.NET.MatterhookClient)",
+  "props": {
+    "card": "**THIS IS A CARD**\n\nIt came from [Matterhook.NET.MatterhookClient](https://github.com/promofaux/Matterhook.NET.MatterhookClient)"
+  }
+}

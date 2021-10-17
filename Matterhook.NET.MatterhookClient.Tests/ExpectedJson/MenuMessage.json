@@ -1,0 +1,38 @@
+﻿{
+  "channel": "testChannel",
+  "username": "Awesome-O-Matic",
+  "icon_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Robot_icon.svg/2000px-Robot_icon.svg.png",
+  "text": "This is a menu message posted using [Matterhook.NET.MatterhookClient](https://github.com/promofaux/Matterhook.NET.MatterhookClient)",
+  "attachments": [
+    {
+      "pretext": "This is optional pretext that shows above the attachment.",
+      "text": "This is the text of the attachment. ",
+      "actions": [
+        {
+          "name": "Test",
+          "integration": {
+            "url": "https://notarealoutgoingwebhook.justfortests",
+            "context": {
+              "text": "Some data to send always."
+            }
+          },
+          "type": "select",
+          "options": [
+            {
+              "text": "Option1",
+              "value": "value1"
+            },
+            {
+              "text": "Option2",
+              "value": "value2"
+            },
+            {
+              "text": "Option3",
+              "value": "value3"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

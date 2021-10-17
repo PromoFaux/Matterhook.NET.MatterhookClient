@@ -36,6 +36,17 @@ jobs:
       name: Build
       run: dotnet build $SOLUTION --configuration $BUILD_CONFIG --no-restore
     -
+      name: Run Tests
+      run: dotnet test --no-restore --verbosity normal
+    -
       name: Publish
       if: github.event_name != 'pull_request'
-      run: nuget push Matterhook.NET.MatterhookClient/bin/Release/*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{secrets.NUGET_API_KEY}}
+      run: |
+        if [ "${{ secrets.NUGET_API_KEY }}" != "" ]; then
+          echo "Pushing to nuget.org"
+          nuget push Matterhook.NET.MatterhookClient/bin/Release/*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{secrets.NUGET_API_KEY}}
+        else
+          echo "Not pushing to nuget.org, no NUGET_API_KEY set in repo secrets"
+        fi
+        echo "Pushing to github packages"
+        nuget push Matterhook.NET.MatterhookClient/bin/Release/*.nupkg -Source 'https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json' -ApiKey ${{secrets.GITHUB_TOKEN}}

@@ -9,6 +9,7 @@ namespace Matterhook.NET.MatterhookClient
         {
             NullValueHandling = NullValueHandling.Ignore;
             ContractResolver=new CamelCasePropertyNamesContractResolver();
+            Formatting = Formatting.Indented;
         }
     }
 }

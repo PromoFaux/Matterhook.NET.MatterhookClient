@@ -39,15 +39,22 @@ namespace Matterhook.NET.MatterhookClient
 
         [JsonProperty(PropertyName = "props")]
         public MattermostProps Props { get; set; }
+
         internal MattermostMessage Clone()
         {
             return new MattermostMessage
             {
-                Text ="",
+                Text = "",
                 Channel = this.Channel,
                 Username = this.Username,
                 IconUrl = this.IconUrl
             };
+        }
+
+
+        public string SerializeToJson()
+        {
+            return JsonConvert.SerializeObject(this, new MattermostJsonSerializerSettings());
         }
     }
 }
