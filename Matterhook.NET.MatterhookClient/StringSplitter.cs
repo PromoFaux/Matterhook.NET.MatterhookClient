@@ -20,56 +20,46 @@ namespace Matterhook.NET.MatterhookClient
         {
             if (string.IsNullOrEmpty(str)) throw new ArgumentException("Text can't be null or empty.", nameof(str));
             if (maxChunkSize < 1) throw new ArgumentException("Max. chunk size must be at least 1 char.", nameof(maxChunkSize));
-
-            return SplitTextIntoChunks2();
-
-            IEnumerable<string> SplitTextIntoChunks2()
+            if (str.Length < maxChunkSize) return new List<string> { str };
+            if (preserveWords)
             {
-                if (str.Length < maxChunkSize)
-                {
-                    yield return str;
-                }
-                else if (preserveWords)
-                {
-                    //Less Simple
-                    foreach (var chunk in SplitTextBySizePreservingWords(str, maxChunkSize))
-                        yield return chunk;
-                }
-                else
-                {
-                    //Simple
-                    foreach (var chunk in SplitTextBySize(str, maxChunkSize))
-                        yield return chunk;
-                }
+                return SplitTextBySizePreservingWords(str, maxChunkSize);
+            }
+            else
+            {
+                return SplitTextBySize(str, maxChunkSize);
             }
         }
 
         private static IEnumerable<string> SplitTextBySize(string str, int maxChunkSize)
         {
-            if (str.Length < maxChunkSize) yield return str;
+            if (str.Length < maxChunkSize) return new List<string> { str };
+            var list = new List<string>();
             for (var i = 0; i < str.Length; i += maxChunkSize)
             {
-                yield return str.Substring(i, Math.Min(maxChunkSize, str.Length - i));
+                list.Add(str.Substring(i, Math.Min(maxChunkSize, str.Length - i)));
             }
+            return list;
         }
 
         private static IEnumerable<string> SplitTextBySizePreservingWords(string str, int maxChunkSize)
         {
-            if (str.Length < maxChunkSize) yield return str;
+            if (str.Length < maxChunkSize) return new List<string> { str };
             var words = str.Split(' ');
             var tempString = new StringBuilder("");
-
+            var list = new List<string>();
             foreach (var word in words)
             {
                 if (word.Length + tempString.Length + 1 > maxChunkSize)
                 {
-                    yield return tempString.ToString();
+                    list.Add(tempString.ToString());
                     tempString.Clear();
                 }
-
                 tempString.Append(tempString.Length > 0 ? " " + word : word);
             }
-            yield return tempString.ToString();
+            if (tempString.Length >= 1)
+                list.Add(tempString.ToString());
+            return list;
         }
     }
 }
