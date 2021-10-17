@@ -1,17 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.10
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31521.260
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Matterhook.NET.MatterhookClient", "Matterhook.NET.MatterhookClient\Matterhook.NET.MatterhookClient.csproj", "{52ED8E2C-7DA3-4D7C-B14F-5AC25934ADB7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DD13AC46-A75C-44CE-A48F-0ADF1D2A5A47}"
 	ProjectSection(SolutionItems) = preProject
-		appveyor.yml = appveyor.yml
+		.github\workflows\build.yml = .github\workflows\build.yml
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManualTests", "ManualTests\ManualTests.csproj", "{7A252949-3DCA-454C-9436-1A953C1FC734}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ManualTests", "ManualTests\ManualTests.csproj", "{7A252949-3DCA-454C-9436-1A953C1FC734}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
