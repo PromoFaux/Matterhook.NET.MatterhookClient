@@ -21,7 +21,7 @@ namespace Matterhook.NET.MatterhookClient
         public string Url { get; set; }
 
         /// <summary>
-        /// Collection of key-value to store any data to be sent to the integration See https://docs.mattermost.com/developer/interactive-messages.html#parameters 
+        /// Collection of key-value to store any data to be sent to the integration See https://docs.mattermost.com/developer/interactive-messages.html#parameters
         /// </summary>
         [JsonProperty(PropertyName = "context")]
         public Dictionary<string,object> Context { get; set; }

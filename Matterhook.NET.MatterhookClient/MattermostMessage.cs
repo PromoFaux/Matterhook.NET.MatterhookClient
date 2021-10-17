@@ -32,7 +32,7 @@ namespace Matterhook.NET.MatterhookClient
         public string Text { get; set; }
 
         /// <summary>
-        /// Richtext attachments 
+        /// Richtext attachments
         /// </summary>
         [JsonProperty(PropertyName = "attachments")]
         public List<MattermostAttachment> Attachments { get; set; }

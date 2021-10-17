@@ -8,7 +8,7 @@ namespace Matterhook.NET.MatterhookClient
     public class MessageMenuOption
     {
         /// <summary>
-        /// Creates an option 
+        /// Creates an option
         /// </summary>
         /// <param name="text">Option's name</param>
         /// <param name="value">Option's value</param>

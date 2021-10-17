@@ -30,6 +30,6 @@ namespace Matterhook.NET.MatterhookClient
         /// The options for the menu.
         /// </summary>
         [JsonProperty(PropertyName = "options")]
-        public List<MessageMenuOption> Options { get; set; } 
+        public List<MessageMenuOption> Options { get; set; }
     }
 }

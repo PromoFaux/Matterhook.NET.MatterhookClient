@@ -77,7 +77,7 @@ namespace Matterhook.NET.MatterhookClient
 
         //https://docs.mattermost.com/developer/message-attachments.html#author-details
 
-        #region AuthorDetails 
+        #region AuthorDetails
 
         /// <summary>
         ///     An optional name used to identify the author. It will be included in a small section at the top of the attachment.
@@ -147,4 +147,3 @@ namespace Matterhook.NET.MatterhookClient
         public List<IMattermostAction> Actions { get; set; }
     }
 }
-    

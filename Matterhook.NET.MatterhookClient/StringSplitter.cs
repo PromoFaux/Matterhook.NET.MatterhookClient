@@ -7,7 +7,7 @@ namespace Matterhook.NET.MatterhookClient
     /// <summary>
     /// Provides text splitting functionality
     /// </summary>
-    public class StringSplitter
+    public static class StringSplitter
     {
         /// <summary>
         /// Splits a text into chuncks of a given size with the option to preserve words.
@@ -20,18 +20,27 @@ namespace Matterhook.NET.MatterhookClient
         {
             if (string.IsNullOrEmpty(str)) throw new ArgumentException("Text can't be null or empty.", nameof(str));
             if (maxChunkSize < 1) throw new ArgumentException("Max. chunk size must be at least 1 char.", nameof(maxChunkSize));
-            if (str.Length < maxChunkSize) yield return str;
-            else if (preserveWords)
+
+            return SplitTextIntoChunks2();
+
+            IEnumerable<string> SplitTextIntoChunks2()
             {
-                //Less Simple
-                foreach (var chunk in SplitTextBySizePreservingWords(str, maxChunkSize))
-                    yield return chunk;
-            }
-            else
-            {
-                //Simple
-                foreach (var chunk in SplitTextBySize(str, maxChunkSize))
-                    yield return chunk;
+                if (str.Length < maxChunkSize)
+                {
+                    yield return str;
+                }
+                else if (preserveWords)
+                {
+                    //Less Simple
+                    foreach (var chunk in SplitTextBySizePreservingWords(str, maxChunkSize))
+                        yield return chunk;
+                }
+                else
+                {
+                    //Simple
+                    foreach (var chunk in SplitTextBySize(str, maxChunkSize))
+                        yield return chunk;
+                }
             }
         }
 
