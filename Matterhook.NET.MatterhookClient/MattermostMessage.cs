@@ -51,7 +51,6 @@ namespace Matterhook.NET.MatterhookClient
             };
         }
 
-
         public string SerializeToJson()
         {
             return JsonConvert.SerializeObject(this, new MattermostJsonSerializerSettings());
