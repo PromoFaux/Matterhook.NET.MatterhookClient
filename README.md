@@ -1,4 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/76x60eg4vjve4vcf?svg=true)](https://ci.appveyor.com/project/PromoFaux/matterhook-net-matterhookclient) [![NuGet](https://img.shields.io/nuget/v/Matterhook.NET.MatterhookClient.svg)](https://www.nuget.org/packages/Matterhook.NET.MatterhookClient/)
+[![Build](https://github.com/PromoFaux/Matterhook.NET.MatterhookClient/actions/workflows/build.yml/badge.svg)](https://github.com/PromoFaux/Matterhook.NET.MatterhookClient/actions/workflows/build.yml) [![NuGet](https://img.shields.io/nuget/v/Matterhook.NET.MatterhookClient.svg)](https://www.nuget.org/packages/Matterhook.NET.MatterhookClient/)
 [![NuGet](https://img.shields.io/nuget/dt/Matterhook.NET.MatterhookClient.svg)](https://www.nuget.org/packages/Matterhook.NET.MatterhookClient/)
 
 # Matterhook.NET.MatterhookClient
@@ -18,7 +18,7 @@ Using this library is really easy. Just create a new MatterhookClient
 var client = new MatterhookClient("https://your.webhook.url/0892340923432");
 ```
 
-Create your message 
+Create your message
 
 ```csharp
 var message = new MattermostMessage()
@@ -168,7 +168,7 @@ and clicking `Notify` will trigger a POST request to `https://matterhook.example
 ```json
 {
   "user_id": "{userid}",
-  "context": {   
+  "context": {
     "text": "New code was pushed."
   }
 }
@@ -218,6 +218,6 @@ You can add as many attachments of any type to a message as you want. Message me
 ## Contributing
 
 We welcome everyone who wants to contribute to this repo!
-Just open an issue with your intention or make a comment in some open issue you would like to work on. 
+Just open an issue with your intention or make a comment in some open issue you would like to work on.
 
 Please ensure that your Pull Requests are based on, and submitted against the development branch.

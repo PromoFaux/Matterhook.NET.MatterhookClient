@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452;net461;net471;netcoreapp1.0;netcoreapp2.1;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard20;netstandard21</TargetFrameworks>
     <Authors>Promofaux, rgomez90</Authors>
     <Company />
     <Description>Simple HTTPclient to post messages to your Mattermost server</Description>
@@ -13,10 +13,14 @@
     <FileVersion>1.0.0.0</FileVersion>
     <Version>1.0.4-asdad-cxcxc-2</Version>
     <PackageId>Matterhook.NET.MatterhookClient</PackageId>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="GitVersion.MsBuild" Version="5.7.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
