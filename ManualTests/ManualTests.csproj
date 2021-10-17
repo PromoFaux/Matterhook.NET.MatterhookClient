@@ -9,4 +9,10 @@
     <ProjectReference Include="..\Matterhook.NET.MatterhookClient\Matterhook.NET.MatterhookClient.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
