@@ -15,6 +15,7 @@ namespace ManualTests
             var _config = LoadConfig();
 
             PostBasicMessage(_config);
+            PostBasicMessageWithCard(_config);
             PostAdvancedMessage(_config);
             PostButtonsMessage(_config);
             PostMenuMessage(_config);
@@ -27,9 +28,22 @@ namespace ManualTests
             var client = new MatterhookClient(config.incomingWebHookUrl);
             var message = new MattermostMessage
             {
-                Text = "Hello, I was posted using [Matterhook.NET](https://github.com/promofaux/Matterhook.NET)",
+                Text = "Hello, I was posted using [Matterhook.NET.MatterhookClient](https://github.com/promofaux/Matterhook.NET.MatterhookClient)",
                 Channel = config.testChannel,
                 Username = "Awesome-O-Matic"
+            };
+            Task.WaitAll(client.PostAsync(message));
+        }
+
+        public static void PostBasicMessageWithCard(Config config)
+        {
+            var client = new MatterhookClient(config.incomingWebHookUrl);
+            var message = new MattermostMessage
+            {
+                Text = "Hello, I was posted using [Matterhook.NET.MatterhookClient](https://github.com/promofaux/Matterhook.NET.MatterhookClient)",
+                Channel = config.testChannel,
+                Username = "Awesome-O-Matic",
+                Props = new MattermostProps() { Card = "**THIS IS A CARD**\n\nIt came from [Matterhook.NET.MatterhookClient](https://github.com/promofaux/Matterhook.NET.MatterhookClient)" }
             };
             Task.WaitAll(client.PostAsync(message));
         }
@@ -39,7 +53,7 @@ namespace ManualTests
             var client = new MatterhookClient(config.incomingWebHookUrl);
             var message = new MattermostMessage
             {
-                Text = "Hello, I was posted using [Matterhook.NET](https://github.com/promofaux/Matterhook.NET)",
+                Text = "Hello, I was posted using [Matterhook.NET.MatterhookClient](https://github.com/promofaux/Matterhook.NET.MatterhookClient)",
                 Channel = config.testChannel,
                 Username = "Awesome-O-Matic",
                 IconUrl =
@@ -144,7 +158,7 @@ namespace ManualTests
             var message = new MattermostMessage
             {
                 Text =
-                    "This is a menu message posted using [Matterhook.NET](https://github.com/promofaux/Matterhook.NET)",
+                    "This is a menu message posted using [Matterhook.NET.MatterhookClient](https://github.com/promofaux/Matterhook.NET.MatterhookClient)",
                 Channel = config.testChannel,
                 Username = "Awesome-O-Matic",
                 IconUrl =
@@ -186,7 +200,7 @@ namespace ManualTests
             var message = new MattermostMessage
             {
                 Text =
-                    "This is a message menu with channels source posted using [Matterhook.NET](https://github.com/promofaux/Matterhook.NET)",
+                    "This is a message menu with channels source posted using [Matterhook.NET.MatterhookClient](https://github.com/promofaux/Matterhook.NET.MatterhookClient)",
                 Channel = config.testChannel,
                 Username = "Awesome-O-Matic",
                 IconUrl =
@@ -222,7 +236,7 @@ namespace ManualTests
             var message = new MattermostMessage
             {
                 Text =
-                    "This is a message menu with users source posted using [Matterhook.NET](https://github.com/promofaux/Matterhook.NET)",
+                    "This is a message menu with users source posted using [Matterhook.NET.MatterhookClient](https://github.com/promofaux/Matterhook.NET.MatterhookClient)",
                 Channel = config.testChannel,
                 Username = "Awesome-O-Matic",
                 IconUrl =

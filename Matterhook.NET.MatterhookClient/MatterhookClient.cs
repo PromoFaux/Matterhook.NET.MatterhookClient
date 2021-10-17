@@ -89,6 +89,11 @@ namespace Matterhook.NET.MatterhookClient
                     }
                 }
 
+                if (inMessage.Props != null)
+                {
+                    outMessages[msgIdx].Props = inMessage.Props;
+                }
+
                 if (outMessages.Count > 1)
                 {
                     var num = 1;

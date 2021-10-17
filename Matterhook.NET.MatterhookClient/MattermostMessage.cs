@@ -37,6 +37,8 @@ namespace Matterhook.NET.MatterhookClient
         [JsonProperty(PropertyName = "attachments")]
         public List<MattermostAttachment> Attachments { get; set; }
 
+        [JsonProperty(PropertyName = "props")]
+        public MattermostProps Props { get; set; }
         internal MattermostMessage Clone()
         {
             return new MattermostMessage
