@@ -23,7 +23,7 @@ jobs:
         fetch-depth: 0 # To make GitVersion work (installed as dependency in project)
     -
       name: Setup NuGet
-      uses: NuGet/setup-nuget@v1.0.5
+      uses: NuGet/setup-nuget@v3.1.0
     -
       name: Restore dependencies
       run: nuget restore $SOLUTION
