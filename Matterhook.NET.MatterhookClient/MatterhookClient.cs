@@ -99,7 +99,8 @@ namespace Matterhook.NET.MatterhookClient
                     var num = 1;
                     foreach (var msg in outMessages)
                     {
-                        msg.Text = $"`({num}/{msgIdx + 1}): ` " + msg.Text;
+                        var separator = msg.Text.StartsWith("```") || msg.Text.StartsWith("~~~") ? "\n" : " ";
+                        msg.Text = $"`({num}/{msgIdx + 1}): `" + separator + msg.Text;
                         num++;
                     }
                 }

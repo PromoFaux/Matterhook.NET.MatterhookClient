@@ -23,11 +23,11 @@ namespace Matterhook.NET.MatterhookClient
             if (str.Length < maxChunkSize) return new List<string> { str };
             if (preserveWords)
             {
-                return SplitTextBySizePreservingWords(str, maxChunkSize);
+                return PreserveFencedCodeBlocks(SplitTextBySizePreservingWords(str, maxChunkSize));
             }
             else
             {
-                return SplitTextBySize(str, maxChunkSize);
+                return PreserveFencedCodeBlocks(SplitTextBySize(str, maxChunkSize));
             }
         }
 
@@ -60,6 +60,62 @@ namespace Matterhook.NET.MatterhookClient
             if (tempString.Length >= 1)
                 list.Add(tempString.ToString());
             return list;
+        }
+
+        private static IEnumerable<string> PreserveFencedCodeBlocks(IEnumerable<string> chunks)
+        {
+            var chunkList = new List<string>(chunks);
+            var result = new List<string>();
+            string openingFence = null;
+            string closingFence = null;
+
+            for (var i = 0; i < chunkList.Count; i++)
+            {
+                var chunk = chunkList[i];
+                var prefix = openingFence == null ? string.Empty : openingFence + "\n";
+
+                foreach (var line in chunk.Split('\n'))
+                {
+                    var fence = GetFence(line);
+                    if (fence == null)
+                        continue;
+
+                    if (openingFence == null)
+                    {
+                        openingFence = line;
+                        closingFence = fence;
+                    }
+                    else if (fence == closingFence)
+                    {
+                        openingFence = null;
+                        closingFence = null;
+                    }
+                }
+
+                var suffix = openingFence != null && i < chunkList.Count - 1
+                    ? "\n" + closingFence
+                    : string.Empty;
+                result.Add(prefix + chunk + suffix);
+            }
+
+            return result;
+        }
+
+        private static string GetFence(string line)
+        {
+            var trimmedLine = line.TrimStart(' ', '\t');
+            if (trimmedLine.Length < 3)
+                return null;
+
+            var character = trimmedLine[0];
+            if (character != '`' && character != '~')
+                return null;
+
+            var length = 0;
+            while (length < trimmedLine.Length && trimmedLine[length] == character)
+                length++;
+
+            return length >= 3 ? new string(character, length) : null;
         }
     }
 }
