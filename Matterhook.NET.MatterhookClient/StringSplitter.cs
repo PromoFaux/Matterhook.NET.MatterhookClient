@@ -15,20 +15,18 @@ namespace Matterhook.NET.MatterhookClient
         /// <param name="str">The text to be splitted.</param>
         /// <param name="maxChunkSize">Maximum size for each text chunk.</param>
         /// <param name="preserveWords">Flag indicating if words should be preserved.</param>
+        /// <param name="truncate">Flag indicating if only the first chunk should be returned.</param>
         /// <returns></returns>
-        public static IEnumerable<string> SplitTextIntoChunks(string str, int maxChunkSize, bool preserveWords = true)
+        public static IEnumerable<string> SplitTextIntoChunks(string str, int maxChunkSize, bool preserveWords = true, bool truncate = false)
         {
             if (string.IsNullOrEmpty(str)) throw new ArgumentException("Text can't be null or empty.", nameof(str));
             if (maxChunkSize < 1) throw new ArgumentException("Max. chunk size must be at least 1 char.", nameof(maxChunkSize));
             if (str.Length < maxChunkSize) return new List<string> { str };
-            if (preserveWords)
-            {
-                return PreserveFencedCodeBlocks(SplitTextBySizePreservingWords(str, maxChunkSize));
-            }
-            else
-            {
-                return PreserveFencedCodeBlocks(SplitTextBySize(str, maxChunkSize));
-            }
+
+            var chunks = new List<string>(PreserveFencedCodeBlocks(preserveWords
+                ? SplitTextBySizePreservingWords(str, maxChunkSize)
+                : SplitTextBySize(str, maxChunkSize)));
+            return truncate ? new List<string> { chunks[0] } : chunks;
         }
 
         private static IEnumerable<string> SplitTextBySize(string str, int maxChunkSize)
@@ -52,7 +50,8 @@ namespace Matterhook.NET.MatterhookClient
             {
                 if (word.Length + tempString.Length + 1 > maxChunkSize)
                 {
-                    list.Add(tempString.ToString());
+                    if (tempString.Length > 0)
+                        list.Add(tempString.ToString());
                     tempString.Clear();
                 }
                 tempString.Append(tempString.Length > 0 ? " " + word : word);
