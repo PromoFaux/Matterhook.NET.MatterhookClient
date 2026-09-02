@@ -23,7 +23,7 @@ jobs:
         fetch-depth: 0 # To make GitVersion work (installed as dependency in project)
     -
       name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v6
       with:
         dotnet-version: '6.0.x'
         include-prerelease: true
