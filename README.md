@@ -1,3 +1,5 @@
+> **⚠️ Archived / Deprecated:** This repository is no longer maintained. For an actively maintained Mattermost .NET client, I would suggest taking a look at [Mattermost.NET](https://github.com/bvdcode/Mattermost.NET) instead.
+
 [![Build](https://github.com/PromoFaux/Matterhook.NET.MatterhookClient/actions/workflows/build.yml/badge.svg)](https://github.com/PromoFaux/Matterhook.NET.MatterhookClient/actions/workflows/build.yml) [![NuGet](https://img.shields.io/nuget/v/Matterhook.NET.MatterhookClient.svg)](https://www.nuget.org/packages/Matterhook.NET.MatterhookClient/)
 [![NuGet](https://img.shields.io/nuget/dt/Matterhook.NET.MatterhookClient.svg)](https://www.nuget.org/packages/Matterhook.NET.MatterhookClient/)
 
