@@ -28,10 +28,25 @@ namespace Matterhook.NET.MatterhookClient.Tests
 
             var chunks = StringSplitter.SplitTextIntoChunks(text, 25).ToList();
 
-            Assert.Equal(3, chunks.Count);
-            Assert.Equal("Before\n```json\none two\n```", chunks[0]);
-            Assert.Equal("```json\nthree four five six seven\n```", chunks[1]);
-            Assert.Equal("```json\neight nine ten\n```\nAfter", chunks[2]);
+            Assert.Equal(6, chunks.Count);
+            Assert.Equal("Before\n```json\none\n```", chunks[0]);
+            Assert.Equal("```json\ntwo three\n```", chunks[1]);
+            Assert.Equal("```json\nfour five six\n```", chunks[2]);
+            Assert.Equal("```json\nseven eight\n```", chunks[3]);
+            Assert.Equal("```json\nnine\n```", chunks[4]);
+            Assert.Equal("```json\nten\n```\nAfter", chunks[5]);
+        }
+
+        [Fact]
+        public void StringSplitterKeepsFencedChunksWithinMaxChunkSize()
+        {
+            var text = "Before\n```json\none two three four five six seven eight nine ten\n```\nAfter";
+            const int maxChunkSize = 25;
+
+            var chunks = StringSplitter.SplitTextIntoChunks(text, maxChunkSize).ToList();
+
+            Assert.All(chunks, chunk => Assert.True(chunk.Length <= maxChunkSize,
+                $"Chunk '{chunk}' ({chunk.Length} chars) exceeds maxChunkSize ({maxChunkSize})."));
         }
 
         [Fact]
@@ -42,10 +57,10 @@ namespace Matterhook.NET.MatterhookClient.Tests
             Assert.Single(chunks);
             Assert.Equal("one two", chunks[0]);
 
-            var markdownChunks = StringSplitter.SplitTextIntoChunks("Before\n```json\none two three four\n```", 18, truncate: true).ToList();
+            var markdownChunks = StringSplitter.SplitTextIntoChunks("Before\n```json\none two three four\n```", 30, truncate: true).ToList();
 
             Assert.Single(markdownChunks);
-            Assert.Equal("Before\n```json\none\n```", markdownChunks[0]);
+            Assert.Equal("Before\n```json\none two\n```", markdownChunks[0]);
         }
 
     }

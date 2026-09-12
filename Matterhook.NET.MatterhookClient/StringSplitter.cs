@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -23,15 +23,15 @@ namespace Matterhook.NET.MatterhookClient
             if (maxChunkSize < 1) throw new ArgumentException("Max. chunk size must be at least 1 char.", nameof(maxChunkSize));
             if (str.Length < maxChunkSize) return new List<string> { str };
 
-            var chunks = new List<string>(PreserveFencedCodeBlocks(preserveWords
+            var chunks = preserveWords
                 ? SplitTextBySizePreservingWords(str, maxChunkSize)
-                : SplitTextBySize(str, maxChunkSize)));
+                : SplitTextBySize(str, maxChunkSize);
+
             return truncate ? new List<string> { chunks[0] } : chunks;
         }
 
-        private static IEnumerable<string> SplitTextBySize(string str, int maxChunkSize)
+        private static List<string> SplitTextBySize(string str, int maxChunkSize)
         {
-            if (str.Length < maxChunkSize) return new List<string> { str };
             var list = new List<string>();
             for (var i = 0; i < str.Length; i += maxChunkSize)
             {
@@ -40,62 +40,88 @@ namespace Matterhook.NET.MatterhookClient
             return list;
         }
 
-        private static IEnumerable<string> SplitTextBySizePreservingWords(string str, int maxChunkSize)
+        /// <summary>
+        /// Splits text into chunks no larger than maxChunkSize, preserving whole words. Any fenced
+        /// code block (``` or ~~~) that a chunk boundary would otherwise land inside of is closed at
+        /// the end of the chunk and re-opened (with its original language hint) at the start of the
+        /// next one. The overhead of that closing/re-opening text is reserved for up front, so a
+        /// chunk is only ever allowed to grow past maxChunkSize when a single word (including any
+        /// fence line stuck to it) is already too big to fit on its own - the same pre-existing
+        /// limit that plain word-preserving splitting has always had.
+        /// </summary>
+        private static List<string> SplitTextBySizePreservingWords(string str, int maxChunkSize)
         {
-            if (str.Length < maxChunkSize) return new List<string> { str };
             var words = str.Split(' ');
-            var tempString = new StringBuilder("");
-            var list = new List<string>();
-            foreach (var word in words)
+
+            // Fence state (opening line + closing marker) as of just after each word - computed up
+            // front so the packing loop below knows, before committing a word to the current chunk,
+            // whether it would need to leave a fence open (and therefore reserve room to close it).
+            var fenceStateAfterWord = new (string OpenLine, string CloseMarker)[words.Length];
+            string openLine = null;
+            string closeMarker = null;
+            for (var i = 0; i < words.Length; i++)
             {
-                if (word.Length + tempString.Length + 1 > maxChunkSize)
-                {
-                    if (tempString.Length > 0)
-                        list.Add(tempString.ToString());
-                    tempString.Clear();
-                }
-                tempString.Append(tempString.Length > 0 ? " " + word : word);
-            }
-            if (tempString.Length >= 1)
-                list.Add(tempString.ToString());
-            return list;
-        }
-
-        private static IEnumerable<string> PreserveFencedCodeBlocks(IEnumerable<string> chunks)
-        {
-            var chunkList = new List<string>(chunks);
-            var result = new List<string>();
-            string openingFence = null;
-            string closingFence = null;
-
-            for (var i = 0; i < chunkList.Count; i++)
-            {
-                var chunk = chunkList[i];
-                var prefix = openingFence == null ? string.Empty : openingFence + "\n";
-
-                foreach (var line in chunk.Split('\n'))
+                foreach (var line in words[i].Split('\n'))
                 {
                     var fence = GetFence(line);
                     if (fence == null)
                         continue;
 
-                    if (openingFence == null)
+                    if (openLine == null)
                     {
-                        openingFence = line;
-                        closingFence = fence;
+                        openLine = line;
+                        closeMarker = fence;
                     }
-                    else if (fence == closingFence)
+                    else if (fence == closeMarker)
                     {
-                        openingFence = null;
-                        closingFence = null;
+                        openLine = null;
+                        closeMarker = null;
                     }
                 }
 
-                var suffix = openingFence != null && i < chunkList.Count - 1
-                    ? "\n" + closingFence
-                    : string.Empty;
-                result.Add(prefix + chunk + suffix);
+                fenceStateAfterWord[i] = (openLine, closeMarker);
             }
+
+            var result = new List<string>();
+            var current = new StringBuilder();
+            var stateAtEndOfCurrent = (OpenLine: (string)null, CloseMarker: (string)null);
+
+            for (var i = 0; i < words.Length; i++)
+            {
+                var word = words[i];
+                var stateBeforeWord = i == 0 ? (OpenLine: (string)null, CloseMarker: (string)null) : fenceStateAfterWord[i - 1];
+
+                if (current.Length > 0)
+                {
+                    var stateAfterWord = fenceStateAfterWord[i];
+                    var addLength = 1 + word.Length; // +1 for the joining space
+                    var suffixLength = stateAfterWord.CloseMarker != null ? stateAfterWord.CloseMarker.Length + 1 : 0;
+
+                    if (current.Length + addLength + suffixLength > maxChunkSize)
+                    {
+                        if (stateAtEndOfCurrent.OpenLine != null)
+                            current.Append('\n').Append(stateAtEndOfCurrent.CloseMarker);
+                        result.Add(current.ToString());
+                        current.Clear();
+                    }
+                }
+
+                if (current.Length == 0)
+                {
+                    if (stateBeforeWord.OpenLine != null)
+                        current.Append(stateBeforeWord.OpenLine).Append('\n');
+                    current.Append(word);
+                }
+                else
+                {
+                    current.Append(' ').Append(word);
+                }
+
+                stateAtEndOfCurrent = fenceStateAfterWord[i];
+            }
+
+            if (current.Length > 0)
+                result.Add(current.ToString());
 
             return result;
         }
